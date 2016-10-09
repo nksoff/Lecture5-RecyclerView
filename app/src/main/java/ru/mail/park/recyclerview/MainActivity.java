@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.kohsuke.randname.RandomNameGenerator;
@@ -21,20 +22,36 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    protected boolean isSpecialPosition(int position) {
+        return position == 1 || position == 5 || position == 6;
+    }
+
+    protected boolean isStaggered() {
+        return recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager;
+    }
+
+    protected boolean isStaggered3() {
+        return isStaggered() &&
+                ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() == 3;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         final DataSource dataSource = new DataSource();
         recyclerView = (RecyclerView) findViewById(R.id.container);
         recyclerView.setAdapter(new RecyclerView.Adapter() {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new ItemViewHolder(
-                        getLayoutInflater().inflate(R.layout.test, parent, false)
-                );
+                final View view = getLayoutInflater().inflate(R.layout.test, parent, false);
+
+                final ImageView imgView = (ImageView) view.findViewById(R.id.img);
+                imgView.setImageResource(Math.random() > 0.5 ? R.drawable.i1 : R.drawable.i2);
+                imgView.getLayoutParams().height = Math.random() < 0.4 ? 200 : 400;
+                imgView.requestLayout();
+                return new ItemViewHolder(view);
             }
 
             @Override
@@ -42,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
                 Item item = dataSource.getItem(position);
                 ((ItemViewHolder) holder).bind(item);
 
-                if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager &&
-                        holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                final ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+
+                if (isStaggered() && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
                     final StaggeredGridLayoutManager.LayoutParams staggeredLayoutParams =
-                            (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-                    staggeredLayoutParams.setFullSpan(
-                            ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() == 3 &&
-                                    (position == 1 || position == 5 || position == 6)
-                    );
+                            (StaggeredGridLayoutManager.LayoutParams) layoutParams;
+                    staggeredLayoutParams.setFullSpan(isStaggered3() && isSpecialPosition(position));
                     holder.itemView.setLayoutParams(staggeredLayoutParams);
                 }
             }
