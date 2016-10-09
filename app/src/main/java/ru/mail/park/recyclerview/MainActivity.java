@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final ImageView imgView = (ImageView) view.findViewById(R.id.img);
                 imgView.setImageResource(Math.random() > 0.5 ? R.drawable.i1 : R.drawable.i2);
-                imgView.getLayoutParams().height = Math.random() < 0.4 ? 200 : 400;
+                imgView.getLayoutParams().height = Math.random() < 0.4 ? 150 : 400;
                 imgView.requestLayout();
                 return new ItemViewHolder(view);
             }
