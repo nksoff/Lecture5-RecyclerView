@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -31,11 +32,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecyclerView.Adapter() {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                if (viewType == 1) {
-                    return new ItemViewHolder(
-                            getLayoutInflater().inflate(R.layout.test2, parent, false)
-                    );
-                }
                 return new ItemViewHolder(
                         getLayoutInflater().inflate(R.layout.test, parent, false)
                 );
@@ -45,6 +41,17 @@ public class MainActivity extends AppCompatActivity {
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 Item item = dataSource.getItem(position);
                 ((ItemViewHolder) holder).bind(item);
+
+                if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager &&
+                        holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    final StaggeredGridLayoutManager.LayoutParams staggeredLayoutParams =
+                            (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+                    staggeredLayoutParams.setFullSpan(
+                            ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() == 3 &&
+                                    (position == 1 || position == 5 || position == 6)
+                    );
+                    holder.itemView.setLayoutParams(staggeredLayoutParams);
+                }
             }
 
             @Override
@@ -54,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public int getItemViewType(int position) {
-                return position == 1 ? 1 : 2;
+                return 1;
             }
         });
 
@@ -92,6 +99,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
+            }
+        });
+
+        findViewById(R.id.col2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            }
+        });
+
+        findViewById(R.id.col3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
             }
         });
     }
