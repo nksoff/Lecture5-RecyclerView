@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     protected boolean isSpecialPosition(int position) {
-        return position == 1 || position == 5 || position == 6;
+        int position7 = position % 7;
+        return position7 == 1 || position7 == 5 || position7 == 6;
     }
 
     protected boolean isStaggered() {
@@ -45,12 +46,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecyclerView.Adapter() {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                final View view = getLayoutInflater().inflate(R.layout.test, parent, false);
+                final View view = getLayoutInflater().inflate(R.layout.card, parent, false);
 
+                //////
+                // одна из двух картинок
+                // одного из двух размеров
                 final ImageView imgView = (ImageView) view.findViewById(R.id.img);
                 imgView.setImageResource(Math.random() > 0.5 ? R.drawable.i1 : R.drawable.i2);
                 imgView.getLayoutParams().height = Math.random() < 0.4 ? 150 : 400;
                 imgView.requestLayout();
+                //////
+
                 return new ItemViewHolder(view);
             }
 
