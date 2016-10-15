@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    private boolean isSpecialOn = false;
+
     protected boolean isSpecialPosition(int position) {
         int position7 = position % 7;
         return position7 == 1 || position7 == 5 || position7 == 6;
@@ -33,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected boolean isStaggered3() {
         return isStaggered() &&
-                ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() == 3;
+                ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() == 3 &&
+                isSpecialOn;
     }
 
     @Override
@@ -123,16 +126,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.col2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.grid2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                isSpecialOn = false;
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
             }
         });
 
-        findViewById(R.id.col3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.grid3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isSpecialOn = true;
                 recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
             }
         });
