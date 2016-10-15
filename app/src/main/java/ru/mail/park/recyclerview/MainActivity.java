@@ -50,16 +50,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 final View view = getLayoutInflater().inflate(R.layout.card, parent, false);
-
-                //////
-                // одна из двух картинок
-                // одного из двух размеров
-                final ImageView imgView = (ImageView) view.findViewById(R.id.img);
-                imgView.setImageResource(Math.random() > 0.5 ? R.drawable.i1 : R.drawable.i2);
-                imgView.getLayoutParams().height = Math.random() < 0.4 ? 150 : 400;
-                imgView.requestLayout();
-                //////
-
                 return new ItemViewHolder(view);
             }
 
@@ -144,17 +134,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Item generateItem() {
-        return new Item(GENERATOR.next(), GENERATOR.next());
+        return new Item(GENERATOR.next(), GENERATOR.next(),
+                Math.random() > 0.5 ? 1 : 2,
+                Math.random() < 0.4 ? 150 : 400
+                );
     }
 
     private static class Item {
 
-            private final String text1;
-            private final String text2;
+        private final String text1;
+        private final String text2;
+        private final int imgNumber;
+        private final int imgSize;
 
-        Item(String text1, String text2) {
+        Item(String text1, String text2, int imgNumber, int imgSize) {
             this.text1 = text1;
             this.text2 = text2;
+            this.imgNumber = imgNumber;
+            this.imgSize = imgSize;
         }
 
         public String getText1() {
@@ -163,6 +160,14 @@ public class MainActivity extends AppCompatActivity {
 
         public String getText2() {
             return text2;
+        }
+
+        public int getImgNumber() {
+            return imgNumber;
+        }
+
+        public int getImgSize() {
+            return imgSize;
         }
     }
 
@@ -196,16 +201,22 @@ public class MainActivity extends AppCompatActivity {
 
         private final TextView text1;
         private final TextView text2;
+        private final ImageView img;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             this.text1 = (TextView) itemView.findViewById(R.id.text1);
             this.text2 = (TextView) itemView.findViewById(R.id.text2);
+            this.img = (ImageView) itemView.findViewById(R.id.img);
         }
 
         public void bind(Item item) {
             text1.setText(item.getText1());
             text2.setText(item.getText2());
+
+            img.setImageResource(item.getImgNumber() == 1 ? R.drawable.i1 : R.drawable.i2);
+            img.getLayoutParams().height = item.getImgSize();
+            img.requestLayout();
         }
 
     }
